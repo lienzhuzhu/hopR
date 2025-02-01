@@ -1,31 +1,29 @@
 deck <- read.csv("deck.csv", header = TRUE, sep = ",")
 
-head(deck)
-
-deal <- function(cards) {
-	cards[1, ]
+setup <- function(deck) {
+    DECK <- deck
+    
+    DEAL <- function() {
+        card <- deck[1, ]
+        assign("deck", deck[-1, ], envir = parent.env(environment()))
+        card
+    }
+    
+    SHUFFLE <- function(){
+        random <- sample(1:52, size = 52)
+        assign("deck", DECK[random, ], envir = parent.env(environment()))
+    }
+    
+    list(deal = DEAL, shuffle = SHUFFLE)
 }
 
-shuffle <- function(cards) {
-    random <- sample(1:52, size=52)
-    deck[random, ]
-}
+cards <- setup(deck)
+deal <- cards$deal
+shuffle <- cards$shuffle
 
-deck <- shuffle(deck)
-deal(deck)
+rm(deck)
 
-sum(deck$face == "ace")
-
-deck$value[deck$face == "ace"] <- 14
-deck$value[deck$face == "ace"]
-
-deck$value <- 0
-deck$value[deck$suit == "hearts"] <- 1
-deck$value[deck$suit == "spades" & deck$face == "queen"] <- 13
-
-deck <- read.csv("deck.csv", header = TRUE, sep = ",")
-deck$value[deck$face %in% c("jack", "queen", "king")] <- 10
-deck$value[deck$face == "ace"] <- NA
-
-head(deck)
-tail(deck)
+shuffle()
+deal()
+deal()
+deal()
